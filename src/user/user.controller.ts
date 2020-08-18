@@ -98,7 +98,7 @@ export class UserController {
 
   private getAutoSuggestUsers(loginSubstring: string, limit: number): User[] {
     const userItems = this.users
-      .filter((user) => user.login.includes(loginSubstring))
+      .filter((user) => user.login.includes(loginSubstring) && !user.isDeleted)
       .sort((a, b) => (a.login < b.login ? -1 : a.login > b.login ? 1 : 0))
       .slice(0, limit);
 
