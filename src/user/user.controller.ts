@@ -1,13 +1,16 @@
 import { Router } from 'express';
 import { v4 as uuid } from 'uuid';
+
 import { User } from './user.interface';
+import { userPostSchema } from './users.post.schema';
+import { JoiValidator } from '../validator';
 
 export class UserController {
   public router = Router();
   public path = '/users';
   private users: User[];
 
-  constructor() {
+  constructor(private validator: JoiValidator) {
     this.users = [];
     this.initializeRoutes();
   }
@@ -15,8 +18,16 @@ export class UserController {
   initializeRoutes() {
     this.router.get(`${this.path}`, this.getUsers.bind(this));
     this.router.get(`${this.path}/:id`, this.getUserById.bind(this));
-    this.router.post(`${this.path}`, this.createUser.bind(this));
-    this.router.post(`${this.path}/:id`, this.updateUser.bind(this));
+    this.router.post(
+      `${this.path}`,
+      this.validator.validateSchema(userPostSchema),
+      this.createUser.bind(this)
+    );
+    this.router.post(
+      `${this.path}/:id`,
+      this.validator.validateSchema(userPostSchema),
+      this.updateUser.bind(this)
+    );
     this.router.delete(`${this.path}/:id`, this.deleteUser.bind(this));
   }
 
