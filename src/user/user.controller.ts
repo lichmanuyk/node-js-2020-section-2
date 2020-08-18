@@ -23,11 +23,6 @@ export class UserController {
   private getUsers(req: any, res: any) {
     const userItems = this.getAutoSuggestUsers('et', 5);
 
-    if (!userItems) {
-      res.status(404);
-      return res.send('There is no user with such id or it was deleted');
-    }
-
     res.send(userItems);
   }
 
@@ -37,7 +32,7 @@ export class UserController {
     );
 
     if (!userItems) {
-      res.status(404);
+      res.status(400);
       return res.send('There is no user with such id or it was deleted');
     }
 
@@ -62,7 +57,7 @@ export class UserController {
     );
 
     if (userIndex === -1) {
-      res.status(404);
+      res.status(400);
       return res.send('There is no user with such id or it was deleted');
     }
 
@@ -79,7 +74,7 @@ export class UserController {
     const userIndex = this.users.findIndex((user) => user.id === req.params.id);
 
     if (userIndex === -1) {
-      res.status(404);
+      res.status(400);
       return res.send('No user with such id');
     }
 
