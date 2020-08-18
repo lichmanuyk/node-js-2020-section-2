@@ -20,8 +20,11 @@ export class UserController {
     this.router.delete(`${this.path}/:id`, this.deleteUser.bind(this));
   }
 
+  // http://localhost:8080/users?substring=aaa&limit=3
   private getUsers(req: any, res: any) {
-    const userItems = this.getAutoSuggestUsers('et', 5);
+    const limit = req.query.limit || 5;
+    const subString = req.query.substring || '';
+    const userItems = this.getAutoSuggestUsers(subString, limit);
 
     res.send(userItems);
   }
@@ -83,11 +86,10 @@ export class UserController {
   }
 
   private getAutoSuggestUsers(loginSubstring: string, limit: number): User[] {
-    const userItems = this.users;
-    // const userItems = this.users
-    //   .filter((user) => user.login.includes(loginSubstring))
-    //   .sort((a, b) => (a.login > b.login ? -1 : 1))
-    //   .slice(limit - 1);
+    const userItems = this.users
+      .filter((user) => user.login.includes(loginSubstring))
+      .sort((a, b) => (a.login < b.login ? -1 : a.login > b.login ? 1 : 0))
+      .slice(0, limit);
 
     return userItems;
   }
