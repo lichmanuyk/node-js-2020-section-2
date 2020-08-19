@@ -4,10 +4,14 @@ import { v4 as uuid } from 'uuid';
 import { User } from './user.interface';
 
 export class UserService {
-  users: User[];
+  private users: User[];
 
   constructor() {
     this.users = [];
+  }
+
+  getAllUsers() {
+    return [...this.users];
   }
 
   // http://localhost:8080/users?substring=aaa&limit=3

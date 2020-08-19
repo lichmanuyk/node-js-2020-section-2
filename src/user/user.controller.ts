@@ -25,13 +25,13 @@ export class UserController {
     this.router.post(
       `${this.path}`,
       this.validator.validateSchema(userPostSchema),
-      this.validator.validateUniqueSchema(uniqueLoginSchema, this.userService.users),
+      this.validator.validateUniqueSchema(uniqueLoginSchema, this.userService.getAllUsers()),
       this.createUser.bind(this)
     );
     this.router.post(
       `${this.path}/:id`,
       this.validator.validateSchema(userPostSchema),
-      this.validator.validateUniqueSchema(uniqueLoginSchema, this.userService.users),
+      this.validator.validateUniqueSchema(uniqueLoginSchema, this.userService.getAllUsers()),
       this.updateUser.bind(this)
     );
     this.router.delete(
