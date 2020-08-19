@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 
 import { User } from './user.interface';
-import { userPostSchema } from './users.post.schema';
+import { userPostSchema, uniqueLoginSchema } from './users.post.schema';
 import { JoiValidator } from '../validator';
 
 export class UserController {
@@ -21,11 +21,13 @@ export class UserController {
     this.router.post(
       `${this.path}`,
       this.validator.validateSchema(userPostSchema),
+      this.validator.validateUniqueSchema(uniqueLoginSchema, this.users),
       this.createUser.bind(this)
     );
     this.router.post(
       `${this.path}/:id`,
       this.validator.validateSchema(userPostSchema),
+      this.validator.validateUniqueSchema(uniqueLoginSchema, this.users),
       this.updateUser.bind(this)
     );
     this.router.delete(`${this.path}/:id`, this.deleteUser.bind(this));
@@ -33,9 +35,9 @@ export class UserController {
 
   // http://localhost:8080/users?substring=aaa&limit=3
   private getUsers(req: Request, res: Response) {
-    const limit = req.query.limit || 5;
-    const subString = String(req.query.substring) || '';
-    const userItems = this.getAutoSuggestUsers(subString, Number(limit));
+    const limit = req.query.limit ? Number(req.query.limit) : 5;
+    const subString = req.query.substring ? String(req.query.substring) : '';
+    const userItems = this.getAutoSuggestUsers(subString, limit);
 
     res.send(userItems);
   }
@@ -101,7 +103,6 @@ export class UserController {
       .filter((user) => user.login.includes(loginSubstring) && !user.isDeleted)
       .sort((a, b) => (a.login < b.login ? -1 : a.login > b.login ? 1 : 0))
       .slice(0, limit);
-
     return userItems;
   }
 }

@@ -7,3 +7,7 @@ export const userPostSchema = Joi.object().keys({
     .required(),
   age: Joi.number().min(5).max(129).required(),
 });
+
+export const uniqueLoginSchema = Joi.array().unique(
+  (a, b) => a.login === b.login
+);
