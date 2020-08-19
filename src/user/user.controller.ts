@@ -39,7 +39,7 @@ export class UserController {
     const subString = req.query.substring ? String(req.query.substring) : '';
     const userItems = this.getAutoSuggestUsers(subString, limit);
 
-    res.send(userItems);
+    res.json({ userItems });
   }
 
   private getUserById(req: Request, res: Response) {
@@ -48,11 +48,11 @@ export class UserController {
     );
 
     if (!userItems) {
-      res.status(400);
+      res.status(404);
       return res.send('There is no user with such id or it was deleted');
     }
 
-    res.send(userItems);
+    res.json({ userItems });
   }
 
   private createUser(req: Request, res: Response) {
@@ -64,7 +64,7 @@ export class UserController {
       isDeleted: false,
       id,
     });
-    res.send(id);
+    res.json({ id });
   }
 
   private updateUser(req: Request, res: Response) {
@@ -73,7 +73,7 @@ export class UserController {
     );
 
     if (userIndex === -1) {
-      res.status(400);
+      res.status(404);
       return res.send('There is no user with such id or it was deleted');
     }
 
@@ -83,19 +83,19 @@ export class UserController {
       password: req.body.password,
       age: req.body.age,
     };
-    res.send(this.users[userIndex]);
+    res.json(this.users[userIndex]);
   }
 
   private deleteUser(req: Request, res: Response) {
     const userIndex = this.users.findIndex((user) => user.id === req.params.id);
 
     if (userIndex === -1) {
-      res.status(400);
+      res.status(404);
       return res.send('No user with such id');
     }
 
     this.users[userIndex].isDeleted = true;
-    res.sendStatus(200);
+    res.sendStatus(204);
   }
 
   private getAutoSuggestUsers(loginSubstring: string, limit: number): User[] {
