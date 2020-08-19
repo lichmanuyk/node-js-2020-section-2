@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 
 import { User } from './user.interface';
@@ -32,15 +32,15 @@ export class UserController {
   }
 
   // http://localhost:8080/users?substring=aaa&limit=3
-  private getUsers(req: any, res: any) {
+  private getUsers(req: Request, res: Response) {
     const limit = req.query.limit || 5;
-    const subString = req.query.substring || '';
-    const userItems = this.getAutoSuggestUsers(subString, limit);
+    const subString = String(req.query.substring) || '';
+    const userItems = this.getAutoSuggestUsers(subString, Number(limit));
 
     res.send(userItems);
   }
 
-  private getUserById(req: any, res: any) {
+  private getUserById(req: Request, res: Response) {
     const userItems = this.users.find(
       (user) => user.id === req.params.id && !user.isDeleted
     );
@@ -53,7 +53,7 @@ export class UserController {
     res.send(userItems);
   }
 
-  private createUser(req: any, res: any) {
+  private createUser(req: Request, res: Response) {
     const id = uuid();
     this.users.push({
       login: req.body.login,
@@ -65,7 +65,7 @@ export class UserController {
     res.send(id);
   }
 
-  private updateUser(req: any, res: any) {
+  private updateUser(req: Request, res: Response) {
     const userIndex = this.users.findIndex(
       (user) => user.id === req.params.id && !user.isDeleted
     );
@@ -84,7 +84,7 @@ export class UserController {
     res.send(this.users[userIndex]);
   }
 
-  private deleteUser(req: any, res: any) {
+  private deleteUser(req: Request, res: Response) {
     const userIndex = this.users.findIndex((user) => user.id === req.params.id);
 
     if (userIndex === -1) {
