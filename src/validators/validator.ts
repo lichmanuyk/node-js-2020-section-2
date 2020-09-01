@@ -1,9 +1,12 @@
 import Joi from '@hapi/joi';
 import { NextFunction, Request, Response } from 'express';
 
-import { User } from './user/user.interface';
+import { UserService } from '../services/index';
 
 export class JoiValidator {
+
+  constructor(private userService: UserService) {}
+
   public validateSchema(schema: Joi.ObjectSchema<any>) {
     return (req: Request, res: Response, next: NextFunction) => {
       const { error } = schema.validate(req.body, {
@@ -19,8 +22,9 @@ export class JoiValidator {
     };
   }
 
-  public validateUniqueSchema(schema: Joi.ArraySchema, users: User[]) {
+  public validateUniqueSchema(schema: Joi.ArraySchema) {
     return (req: Request, res: Response, next: NextFunction) => {
+      const users = this.userService.getAllUsers();
       const arr = [...users, req.body];
       const { error } = schema.validate(arr, {
         abortEarly: false,

@@ -1,14 +1,14 @@
 import express from 'express';
-import { UserController } from './user/user.controller';
-import { JoiValidator } from './validator';
-import { UserService } from './user/user.service';
+
+import { UserController } from './controllers/index';
+import { JoiValidator } from './validators/index';
+import { UserService } from './services/index';
 
 const app = express();
 const port = 8080;
-const userController = new UserController(
-  new JoiValidator(),
-  new UserService()
-);
+const userService = new UserService();
+const joiValidator = new JoiValidator(userService);
+const userController = new UserController(joiValidator, userService);
 
 app.use(express.json());
 app.use('/', userController.router);

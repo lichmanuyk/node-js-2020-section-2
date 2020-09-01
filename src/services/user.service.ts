@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 
-import { User } from './user.interface';
+import { User } from '../types/index';
 
 export class UserService {
   private users: User[];

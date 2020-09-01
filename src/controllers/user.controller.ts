@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
 
-import { User } from './user.interface';
-import { userPostSchema, uniqueLoginSchema } from './user.post.schema';
-import { JoiValidator } from '../validator';
-import { UserService } from './user.service';
+import {
+  JoiValidator,
+  userPostSchema,
+  uniqueLoginSchema,
+} from '../validators/index';
+import { UserService } from '../services/index';
 
 export class UserController {
   public router = Router();
@@ -18,26 +20,24 @@ export class UserController {
 
   initializeRoutes() {
     this.router.get(`${this.path}`, this.getUsers.bind(this));
-    this.router.get(
-      `${this.path}/:id`,
-      this.getUserById.bind(this)
-    );
+    this.router.get(`${this.path}/:id`, this.getUserById.bind(this));
     this.router.post(
       `${this.path}`,
       this.validator.validateSchema(userPostSchema),
-      this.validator.validateUniqueSchema(uniqueLoginSchema, this.userService.getAllUsers()),
+      this.validator.validateUniqueSchema(
+        uniqueLoginSchema
+      ),
       this.createUser.bind(this)
     );
     this.router.post(
       `${this.path}/:id`,
       this.validator.validateSchema(userPostSchema),
-      this.validator.validateUniqueSchema(uniqueLoginSchema, this.userService.getAllUsers()),
+      this.validator.validateUniqueSchema(
+        uniqueLoginSchema
+      ),
       this.updateUser.bind(this)
     );
-    this.router.delete(
-      `${this.path}/:id`,
-      this.deleteUser.bind(this)
-    );
+    this.router.delete(`${this.path}/:id`, this.deleteUser.bind(this));
   }
 
   // http://localhost:8080/users?substring=aaa&limit=3
