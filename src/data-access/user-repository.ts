@@ -18,11 +18,6 @@ export class UserRepository {
     return user;
   }
 
-  async getAllUsers() {
-    const users = await User.findAll();
-    return JSON.parse(JSON.stringify(users));
-  }
-
   async createUser(user: UserModel) {
     const newUser = await User.create(user);
     return newUser.id;
