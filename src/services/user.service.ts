@@ -8,7 +8,7 @@ export class UserService {
 
   // http://localhost:8080/users?substring=aaa&limit=3
   async getUsers(loginSubstring?: string, limit?: number) {
-    const users = await this.userRepository.getUsers(limit);
+    const users = await this.userRepository.getUsers(limit, loginSubstring);
     return users;
   }
 
