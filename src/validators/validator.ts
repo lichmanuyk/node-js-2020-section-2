@@ -22,9 +22,9 @@ export class JoiValidator {
     };
   }
 
-  public validateUniqueSchema(schema: Joi.ArraySchema) {
+  public async validateUniqueSchema(schema: Joi.ArraySchema) {
+    const users = await this.userService.getAllUsers();
     return (req: Request, res: Response, next: NextFunction) => {
-      const users = this.userService.getAllUsers();
       const arr = [...users, req.body];
       const { error } = schema.validate(arr, {
         abortEarly: false,

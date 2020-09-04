@@ -18,13 +18,13 @@ export class UserController {
     this.initializeRoutes();
   }
 
-  initializeRoutes() {
+  async initializeRoutes() {
     this.router.get(`${this.path}`, this.getUsers.bind(this));
     this.router.get(`${this.path}/:id`, this.getUserById.bind(this));
     this.router.post(
       `${this.path}`,
       this.validator.validateSchema(userPostSchema),
-      this.validator.validateUniqueSchema(
+      await this.validator.validateUniqueSchema(
         uniqueLoginSchema
       ),
       this.createUser.bind(this)
@@ -32,7 +32,7 @@ export class UserController {
     this.router.post(
       `${this.path}/:id`,
       this.validator.validateSchema(userPostSchema),
-      this.validator.validateUniqueSchema(
+      await this.validator.validateUniqueSchema(
         uniqueLoginSchema
       ),
       this.updateUser.bind(this)

@@ -1,15 +1,16 @@
-import { User } from '../types/index';
+import { UserModel } from '../types/index';
+import { v4 as uuid } from 'uuid';
 
-export const MOCK_USERS: User[] = [
+export const MOCK_USERS: UserModel[] = [
   {
-    id: '1',
+    id: uuid(),
     login: 'Peter',
     password: '12345',
     age: 18,
     isDeleted: false,
   },
   {
-    id: '2',
+    id: uuid(),
     login: 'Olga',
     password: '85859',
     age: 25,

@@ -1,29 +1,33 @@
 import { v4 as uuid } from 'uuid';
 
-import { User } from '../types/index';
+import { UserModel } from '../types/index';
+import { UserRepository } from '../data-access/index';
 
 export class UserService {
-  private users: User[];
+  private users: UserModel[];
 
-  constructor() {
+  constructor(private userRepository: UserRepository) {
     this.users = [];
   }
 
-  getAllUsers() {
-    return [...this.users];
+  async getAllUsers() {
+    const users = await this.userRepository.getAllUsers();
+    return users;
+    // return [...users];
   }
 
   // http://localhost:8080/users?substring=aaa&limit=3
-  getUsers(loginSubstring: string, limit: number): User[] {
-    const userItems = this.users
-      .filter((user) => user.login.includes(loginSubstring) && !user.isDeleted)
-      .sort((a, b) => (a.login < b.login ? -1 : a.login > b.login ? 1 : 0))
-      .slice(0, limit);
+  async getUsers(loginSubstring: string, limit: number) {
+    return await this.userRepository.getAllUsers();
+    // const userItems = this.users
+    //   .filter((user) => user.login.includes(loginSubstring) && !user.isDeleted)
+    //   .sort((a, b) => (a.login < b.login ? -1 : a.login > b.login ? 1 : 0))
+    //   .slice(0, limit);
 
-    return userItems;
+    // return userItems;
   }
 
-  getUserById(userId: string): User {
+  getUserById(userId: string): UserModel {
     const userItem = this.users.find(
       (user) => user.id === userId && !user.isDeleted
     );
@@ -31,20 +35,25 @@ export class UserService {
     return userItem;
   }
 
-  createUser(userData: any): string {
+  async createUser(userData: any) {
     const id = uuid();
-    this.users.push({
+    return await this.userRepository.createUser({
       login: userData.login,
       password: userData.password,
       age: userData.age,
       isDeleted: false,
       id,
     });
-
-    return id;
+    // this.users.push({
+    //   login: userData.login,
+    //   password: userData.password,
+    //   age: userData.age,
+    //   isDeleted: false,
+    //   id,
+    // });
   }
 
-  updateUser(userId: string, userData: any): User {
+  updateUser(userId: string, userData: any): UserModel {
     const userIndex = this.users.findIndex(
       (user) => user.id === userId && !user.isDeleted
     );
