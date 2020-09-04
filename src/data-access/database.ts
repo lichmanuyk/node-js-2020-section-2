@@ -7,6 +7,7 @@ const DB_USER_PASSWORD = '12345';
 const HOST = 'localhost';
 const PORT = 5432;
 
+// I use it just for SQL queries from the first task. In all other cases I use sequelize that is below.
 export const pg = new Client({
   user: DB_USER_NAME,
   host: HOST,
