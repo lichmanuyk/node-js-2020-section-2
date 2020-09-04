@@ -24,33 +24,33 @@ export class UserController {
     this.router.post(
       `${this.path}`,
       this.validator.validateSchema(userPostSchema),
-      await this.validator.validateUniqueSchema(
-        uniqueLoginSchema
-      ),
+      // await this.validator.validateUniqueSchema(
+      //   uniqueLoginSchema
+      // ),
       this.createUser.bind(this)
     );
     this.router.post(
       `${this.path}/:id`,
       this.validator.validateSchema(userPostSchema),
-      await this.validator.validateUniqueSchema(
-        uniqueLoginSchema
-      ),
+      // await this.validator.validateUniqueSchema(
+      //   uniqueLoginSchema
+      // ),
       this.updateUser.bind(this)
     );
     this.router.delete(`${this.path}/:id`, this.deleteUser.bind(this));
   }
 
   // http://localhost:8080/users?substring=aaa&limit=3
-  private getUsers(req: Request, res: Response) {
+  private async getUsers(req: Request, res: Response) {
     const limit = req.query.limit ? Number(req.query.limit) : 5;
     const subString = req.query.substring ? String(req.query.substring) : '';
-    const userItems = this.userService.getUsers(subString, limit);
+    const userItems = await this.userService.getUsers(subString, limit);
 
     res.json({ userItems });
   }
 
-  private getUserById(req: Request, res: Response) {
-    const userItems = this.userService.getUserById(req.params.id);
+  private  async getUserById(req: Request, res: Response) {
+    const userItems = await this.userService.getUserById(req.params.id);
 
     if (!userItems) {
       res.status(404);
@@ -60,13 +60,13 @@ export class UserController {
     res.json({ userItems });
   }
 
-  private createUser(req: Request, res: Response) {
-    const id = this.userService.createUser(req.body);
+  private async createUser(req: Request, res: Response) {
+    const id = await this.userService.createUser(req.body);
     res.json({ id });
   }
 
-  private updateUser(req: Request, res: Response) {
-    const updatedUser = this.userService.updateUser(req.params.id, req.body);
+  private async updateUser(req: Request, res: Response) {
+    const updatedUser = await this.userService.updateUser(req.params.id, req.body);
 
     if (!updatedUser) {
       res.status(404);
@@ -75,8 +75,8 @@ export class UserController {
     res.json(updatedUser);
   }
 
-  private deleteUser(req: Request, res: Response) {
-    const isDeleted = this.userService.deleteUser(req.params.id);
+  private async deleteUser(req: Request, res: Response) {
+    const isDeleted = await this.userService.deleteUser(req.params.id);
 
     if (!isDeleted) {
       res.status(404);

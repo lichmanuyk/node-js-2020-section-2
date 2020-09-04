@@ -23,7 +23,7 @@ export class JoiValidator {
   }
 
   public async validateUniqueSchema(schema: Joi.ArraySchema) {
-    const users = await this.userService.getAllUsers();
+    const users = await this.userService.getUsers();
     return (req: Request, res: Response, next: NextFunction) => {
       const arr = [...users, req.body];
       const { error } = schema.validate(arr, {
