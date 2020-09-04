@@ -24,17 +24,17 @@ export class UserController {
     this.router.post(
       `${this.path}`,
       this.validator.validateSchema(userPostSchema),
-      // await this.validator.validateUniqueSchema(
-      //   uniqueLoginSchema
-      // ),
+      await this.validator.validateUniqueSchema(
+        uniqueLoginSchema
+      ),
       this.createUser.bind(this)
     );
     this.router.post(
       `${this.path}/:id`,
       this.validator.validateSchema(userPostSchema),
-      // await this.validator.validateUniqueSchema(
-      //   uniqueLoginSchema
-      // ),
+      await this.validator.validateUniqueSchema(
+        uniqueLoginSchema
+      ),
       this.updateUser.bind(this)
     );
     this.router.delete(`${this.path}/:id`, this.deleteUser.bind(this));
