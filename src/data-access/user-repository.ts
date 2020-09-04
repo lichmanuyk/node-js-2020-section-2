@@ -2,10 +2,6 @@ import { User } from '../models/index';
 import { UserModel } from '../types/index';
 
 export class UserRepository {
-  constructor() {
-    User.sync();
-  }
-
   async getUsers(limit?: number, loginSubstr: string = '') {
     const users = await User.findAll({
       limit,
