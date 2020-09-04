@@ -42,7 +42,7 @@ export class UserController {
 
   // http://localhost:8080/users?substring=aaa&limit=3
   private async getUsers(req: Request, res: Response) {
-    const limit = req.query.limit ? Number(req.query.limit) : 5;
+    const limit = req.query.limit ? Number(req.query.limit) : undefined;
     const subString = req.query.substring ? String(req.query.substring) : '';
     const userItems = await this.userService.getUsers(subString, limit);
 

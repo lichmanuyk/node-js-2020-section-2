@@ -1,6 +1,5 @@
 import { v4 as uuid } from 'uuid';
 
-import { UserModel } from '../types/index';
 import { UserRepository } from '../data-access/index';
 
 export class UserService {
@@ -11,20 +10,10 @@ export class UserService {
   async getUsers(loginSubstring?: string, limit?: number) {
     const users = await this.userRepository.getUsers(limit);
     return users;
-    // const userItems = this.users
-    //   .filter((user) => user.login.includes(loginSubstring) && !user.isDeleted)
-    //   .sort((a, b) => (a.login < b.login ? -1 : a.login > b.login ? 1 : 0))
-    //   .slice(0, limit);
-
-    // return userItems;
   }
 
   async getUserById(userId: string) {
     const user = await this.userRepository.getUserById(userId);
-    // const userItem = this.users.find(
-    //   (user) => user.id === userId && !user.isDeleted
-    // );
-
     return user;
   }
 
@@ -38,17 +27,12 @@ export class UserService {
       id
     });
     return id;
-    // this.users.push({
-    //   login: userData.login,
-    //   password: userData.password,
-    //   age: userData.age,
-    //   isDeleted: false,
-    //   id,
-    // });
   }
 
   async updateUser(id: string, userData: any) {
     const updatedUser = await this.userRepository.updateUser({id, ...userData});
+    return updatedUser;
+
     // const userIndex = this.users.findIndex(
     //   (user) => user.id === userId && !user.isDeleted
     // );
@@ -63,7 +47,6 @@ export class UserService {
     //   password: userData.password,
     //   age: userData.age,
     // };
-    return updatedUser;
   }
 
   async deleteUser(userId: string) {

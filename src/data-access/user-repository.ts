@@ -4,6 +4,8 @@ import { UserModel } from '../types/index';
 export class UserRepository {
   async getUsers(limit?: number, loginSubstr: string = '') {
     const users = await User.findAll({
+      where: { isDeleted: false },
+      order: [['login', 'ASC']],
       limit,
     });
     return JSON.parse(JSON.stringify(users));
@@ -11,15 +13,13 @@ export class UserRepository {
 
   async getUserById(id: string) {
     const user = await User.findOne({
-      where: { id, isDeleted: false }
+      where: { id, isDeleted: false },
     });
     return user;
   }
 
   async getAllUsers() {
     const users = await User.findAll();
-    // console.log(JSON.parse(JSON.stringify(users)))
-    // const mappedUsers = users.map(user => user.dataValues())
     return JSON.parse(JSON.stringify(users));
   }
 
@@ -30,7 +30,7 @@ export class UserRepository {
 
   async updateUser(user: UserModel) {
     const dbUser = await User.findOne({
-      where: {id: user.id, isDeleted: false}
+      where: { id: user.id, isDeleted: false },
     });
     dbUser.login = user.login;
     dbUser.password = user.password;
@@ -41,7 +41,7 @@ export class UserRepository {
 
   async deleteUser(id: string) {
     const dbUser = await User.findOne({
-      where: {id, isDeleted: false}
+      where: { id, isDeleted: false },
     });
     dbUser.isDeleted = true;
     await dbUser.save();
