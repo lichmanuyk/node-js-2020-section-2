@@ -9,7 +9,7 @@ export class UserRepository {
         order: [['login', 'ASC']],
         limit,
       });
-      return JSON.parse(JSON.stringify(users));
+      return users.map((user) => user.toJSON());
     } catch (err) {
       throw err;
     }
@@ -37,16 +37,13 @@ export class UserRepository {
 
   async updateUser(user: UserModel) {
     try {
-      const dbUser = await User.findOne({
+      await User.update(user, {
         where: { id: user.id, isDeleted: false },
       });
-
-      dbUser.login = user.login;
-      dbUser.password = user.password;
-      dbUser.age = user.age;
-      await dbUser.save();
-
-      return JSON.parse(JSON.stringify(dbUser));
+      const updatedUser = await User.findOne({
+        where: { id: user.id },
+      });
+      return updatedUser.toJSON();
     } catch (err) {
       throw err;
     }
@@ -54,11 +51,12 @@ export class UserRepository {
 
   async deleteUser(id: string) {
     try {
-      const dbUser = await User.findOne({
-        where: { id, isDeleted: false },
-      });
-      dbUser.isDeleted = true;
-      await dbUser.save();
+      await User.update(
+        { isDeleted: true },
+        {
+          where: { id, isDeleted: false },
+        }
+      );
     } catch (err) {
       throw err;
     }

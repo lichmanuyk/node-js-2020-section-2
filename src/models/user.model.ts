@@ -1,4 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
+import { v4 as uuid } from 'uuid';
 
 import { UserModel } from '../types/index';
 import { sequelize } from '../data-access/index';
@@ -17,6 +18,7 @@ User.init(
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
+      defaultValue: uuid
     },
     login: {
       type: DataTypes.STRING,

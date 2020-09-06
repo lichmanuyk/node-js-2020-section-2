@@ -1,6 +1,9 @@
 import { Sequelize } from 'sequelize';
 import { Client } from 'pg';
 
+import { UserModel } from '../types/index';
+import { MOCK_USERS } from './mock-users';
+
 const DB_NAME = 'postgres';
 const DB_USER_NAME = 'postgres';
 const DB_USER_PASSWORD = '12345';
@@ -26,3 +29,39 @@ export const sequelize = new Sequelize(
     dialect: 'postgres',
   }
 );
+
+export function initDBData() {
+  pg.connect().then(() => {
+    console.log('Connected');
+    createUserTableAndAddUsers()
+      .then(() => {
+        console.log('DataBase created');
+        MOCK_USERS.forEach((mockUser) => {
+          addUserToTable(mockUser)
+            .then(() => console.log('User added to db'))
+            .catch((err) => console.log(err.message));
+        });
+      })
+      .catch((err) => console.log(err.message));
+  });
+}
+
+function createUserTableAndAddUsers() {
+  return pg.query(`
+          CREATE TABLE "User" (
+            id uuid,
+            login varchar(255),
+            password varchar(255),
+            age int,
+            "isDeleted" boolean
+          );
+        `);
+}
+
+function addUserToTable(mockUser: UserModel) {
+  return pg.query(`
+    INSERT INTO "User"
+    ("id", "login", "password", "age", "isDeleted")
+    values ('${mockUser.id}', '${mockUser.login}', '${mockUser.password}', ${mockUser.age}, ${mockUser.isDeleted});
+  `);
+}

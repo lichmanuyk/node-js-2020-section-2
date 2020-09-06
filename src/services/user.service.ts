@@ -1,5 +1,3 @@
-import { v4 as uuid } from 'uuid';
-
 import { UserRepository } from '../data-access/index';
 
 export class UserService {
@@ -25,14 +23,12 @@ export class UserService {
   }
 
   async createUser(userData: any) {
-    const id = uuid();
     try {
-      await this.userRepository.createUser({
+      const id = await this.userRepository.createUser({
         login: userData.login,
         password: userData.password,
         age: userData.age,
         isDeleted: false,
-        id,
       });
       return id;
     } catch (err) {
