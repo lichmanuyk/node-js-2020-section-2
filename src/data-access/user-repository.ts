@@ -51,12 +51,16 @@ export class UserRepository {
 
   async deleteUser(id: string) {
     try {
-      await User.update(
+      const code = await User.update(
         { isDeleted: true },
         {
           where: { id, isDeleted: false },
         }
       );
+
+      if (code[0] === 0) {
+        throw new Error('This user is already deleted');
+      }
     } catch (err) {
       throw err;
     }
