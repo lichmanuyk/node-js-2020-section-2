@@ -48,14 +48,15 @@ export class UserController {
     }
   }
 
-  private async getUserById(req: Request, res: Response) {
+  private async getUserById(req: Request, res: Response): Promise<void> {
     try {
       const userItems = await this.userService.getUserById(req.params.id);
 
       if (!userItems) {
-        return res
+        res
           .status(404)
           .send('There is no user with such id or it was deleted');
+        return;
       }
 
       res.json({ userItems });
@@ -64,7 +65,7 @@ export class UserController {
     }
   }
 
-  private async createUser(req: Request, res: Response) {
+  private async createUser(req: Request, res: Response): Promise<void> {
     try {
       const id = await this.userService.createUser(req.body);
       res.json({ id });
@@ -73,7 +74,7 @@ export class UserController {
     }
   }
 
-  private async updateUser(req: Request, res: Response) {
+  private async updateUser(req: Request, res: Response): Promise<void> {
     try {
       const updatedUser = await this.userService.updateUser(
         req.params.id,
@@ -85,7 +86,7 @@ export class UserController {
     }
   }
 
-  private async deleteUser(req: Request, res: Response) {
+  private async deleteUser(req: Request, res: Response): Promise<void> {
     try {
       await this.userService.deleteUser(req.params.id);
       res.sendStatus(204);

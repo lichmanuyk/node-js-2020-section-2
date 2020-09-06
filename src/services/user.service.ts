@@ -1,10 +1,12 @@
 import { UserRepository } from '../data-access/index';
+import { User } from '../models/index';
+import { UserModel } from '../types/index';
 
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
   // http://localhost:8080/users?substring=aaa&limit=3
-  async getUsers(loginSubstring?: string, limit?: number) {
+  async getUsers(loginSubstring?: string, limit?: number): Promise<User[]> {
     try {
       const users = await this.userRepository.getUsers(limit, loginSubstring);
       return users;
@@ -13,7 +15,7 @@ export class UserService {
     }
   }
 
-  async getUserById(userId: string) {
+  async getUserById(userId: string): Promise<User> {
     try {
       const user = await this.userRepository.getUserById(userId);
       return user;
@@ -22,7 +24,7 @@ export class UserService {
     }
   }
 
-  async createUser(userData: any) {
+  async createUser(userData: UserModel): Promise<string> {
     try {
       const id = await this.userRepository.createUser({
         login: userData.login,
@@ -36,7 +38,7 @@ export class UserService {
     }
   }
 
-  async updateUser(id: string, userData: any) {
+  async updateUser(id: string, userData: UserModel): Promise<User> {
     try {
       const updatedUser = await this.userRepository.updateUser({
         id,
@@ -48,7 +50,7 @@ export class UserService {
     }
   }
 
-  async deleteUser(userId: string) {
+  async deleteUser(userId: string): Promise<void> {
     try {
       await this.userRepository.deleteUser(userId);
     } catch (err) {
