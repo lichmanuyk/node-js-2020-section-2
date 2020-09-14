@@ -1,21 +1,27 @@
 import express from 'express';
 
-import { UserController } from './controllers/index';
-import { JoiValidator } from './validators/index';
-import { UserService } from './services/index';
-import { UserRepository } from './data-access/index';
-import { initDBData } from './data-access/index';
+import { GroupController, UserController } from './controllers/index';
+import { UserJoiValidator, GroupJoiValidator } from './validators/index';
+import { GroupService, UserService } from './services/index';
+import { GroupRepository, UserRepository, initDBData } from './data-access/index';
 
 const app = express();
 const port = 8080;
 
 const userRepository = new UserRepository();
+const groupRepository = new GroupRepository();
+
 const userService = new UserService(userRepository);
-const joiValidator = new JoiValidator(userService);
-const userController = new UserController(joiValidator, userService);
+const groupService = new GroupService(groupRepository);
+
+const userJoiValidator = new UserJoiValidator(userService);
+const groupJoiValidator = new GroupJoiValidator(groupService);
+
+const userController = new UserController(userJoiValidator, userService);
+const groupController = new GroupController(groupJoiValidator, groupService);
 
 app.use(express.json());
-app.use('/', userController.router);
+app.use('/', userController.router, groupController.router);
 
 app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`);

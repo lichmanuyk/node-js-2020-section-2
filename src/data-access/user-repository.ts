@@ -41,10 +41,7 @@ export class UserRepository {
       await User.update(user, {
         where: { id: user.id, isDeleted: false },
       });
-      const updatedUser = await User.findOne({
-        where: { id: user.id },
-        raw: true
-      });
+      const updatedUser = await this.getUserById(user.id);
       return updatedUser;
     } catch (err) {
       throw err;

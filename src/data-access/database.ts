@@ -33,9 +33,9 @@ export const sequelize = new Sequelize(
 export function initDBData() {
   pg.connect().then(() => {
     console.log('Connected');
-    createUserTableAndAddUsers()
+    createUserTable()
       .then(() => {
-        console.log('DataBase created');
+        console.log('User dataBase created');
         MOCK_USERS.forEach((mockUser) => {
           addUserToTable(mockUser)
             .then(() => console.log('User added to db'))
@@ -43,10 +43,13 @@ export function initDBData() {
         });
       })
       .catch((err) => console.log(err.message));
+    createGroupTable()
+      .then(() => console.log('Group database created'))
+      .catch(err => console.log(err.message));
   });
 }
 
-function createUserTableAndAddUsers() {
+function createUserTable() {
   return pg.query(`
           CREATE TABLE "User" (
             id uuid,
@@ -56,6 +59,16 @@ function createUserTableAndAddUsers() {
             "isDeleted" boolean
           );
         `);
+}
+
+function createGroupTable() {
+  return pg.query(`
+          CREATE TABLE "Group" (
+            id uuid,
+            name varchar(255),
+            permissions varchar(255)[]
+          );
+  `)
 }
 
 function addUserToTable(mockUser: UserModel) {

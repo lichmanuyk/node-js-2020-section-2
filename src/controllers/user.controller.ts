@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 
 import {
-  JoiValidator,
+  UserJoiValidator,
   userPostSchema,
-  uniqueLoginSchema,
+  uniqueUserLoginSchema,
 } from '../validators/index';
 import { UserService } from '../services/index';
 
@@ -12,7 +12,7 @@ export class UserController {
   public path = '/users';
 
   constructor(
-    private validator: JoiValidator,
+    private validator: UserJoiValidator,
     private userService: UserService
   ) {
     this.initializeRoutes();
@@ -24,13 +24,13 @@ export class UserController {
     this.router.post(
       `${this.path}`,
       this.validator.validateSchema(userPostSchema),
-      await this.validator.validateUniqueSchema(uniqueLoginSchema),
+      await this.validator.validateUniqueSchema(uniqueUserLoginSchema),
       this.createUser.bind(this)
     );
     this.router.post(
       `${this.path}/:id`,
       this.validator.validateSchema(userPostSchema),
-      await this.validator.validateUniqueSchema(uniqueLoginSchema),
+      await this.validator.validateUniqueSchema(uniqueUserLoginSchema),
       this.updateUser.bind(this)
     );
     this.router.delete(`${this.path}/:id`, this.deleteUser.bind(this));

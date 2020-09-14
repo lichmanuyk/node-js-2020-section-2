@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { UserService } from '../services/index';
 
-export class JoiValidator {
+export class UserJoiValidator {
   constructor(private userService: UserService) {}
 
   public validateSchema(schema: Joi.ObjectSchema<any>) {
