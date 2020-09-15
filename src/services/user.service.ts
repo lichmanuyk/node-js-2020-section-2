@@ -1,5 +1,4 @@
 import {
-  sequelize,
   UserGroupRepository,
   UserRepository,
 } from '../data-access/index';
@@ -58,13 +57,10 @@ export class UserService {
   }
 
   async deleteUser(userId: string): Promise<void> {
-    const transaction = await sequelize.transaction();
     try {
-      await this.userRepository.deleteUser(userId, transaction);
-      await this.userGroupRepository.deleteUserGroupAfterUser(userId, transaction);
-      await transaction.commit();
+      await this.userRepository.deleteUser(userId);
+      await this.userGroupRepository.deleteUserGroupAfterUser(userId);
     } catch (err) {
-      await transaction.rollback();
       throw err;
     }
   }

@@ -55,16 +55,12 @@ export class GroupService {
   }
 
   async deleteGroup(groupId: string): Promise<void> {
-    const transaction = await sequelize.transaction();
     try {
-      await this.groupRepository.deleteGroup(groupId, transaction);
+      await this.groupRepository.deleteGroup(groupId);
       await this.userGroupRepository.deleteUserGroupAfterGroup(
         groupId,
-        transaction
       );
-      await transaction.commit();
     } catch (err) {
-      await transaction.rollback();
       throw err;
     }
   }
