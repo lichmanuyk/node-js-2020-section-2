@@ -3,16 +3,17 @@ import express from 'express';
 import { GroupController, UserController } from './controllers/index';
 import { UserJoiValidator, GroupJoiValidator } from './validators/index';
 import { GroupService, UserService } from './services/index';
-import { GroupRepository, UserRepository, initDBData } from './data-access/index';
+import { GroupRepository, UserRepository, UserGroupRepository, initDBData } from './data-access/index';
 
 const app = express();
 const port = 8080;
 
 const userRepository = new UserRepository();
 const groupRepository = new GroupRepository();
+const userGroupRepository = new UserGroupRepository();
 
-const userService = new UserService(userRepository);
-const groupService = new GroupService(groupRepository);
+const userService = new UserService(userRepository, userGroupRepository);
+const groupService = new GroupService(groupRepository, userGroupRepository);
 
 const userJoiValidator = new UserJoiValidator(userService);
 const groupJoiValidator = new GroupJoiValidator(groupService);

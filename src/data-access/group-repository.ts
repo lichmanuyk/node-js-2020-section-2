@@ -1,3 +1,5 @@
+import { Transaction } from 'sequelize/types';
+
 import { Group } from '../models/index';
 import { GroupModel } from '../types/index';
 
@@ -5,7 +7,7 @@ export class GroupRepository {
   async getGroups(): Promise<Group[]> {
     try {
       const groups = await Group.findAll({
-        raw: true
+        raw: true,
       });
       return groups;
     } catch (err) {
@@ -45,10 +47,11 @@ export class GroupRepository {
     }
   }
 
-  async deleteGroup(id: string): Promise<void> {
+  async deleteGroup(id: string, transaction: Transaction): Promise<void> {
     try {
       const code = await Group.destroy({
         where: { id },
+        transaction
       });
 
       if (code === 0) {

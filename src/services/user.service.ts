@@ -1,9 +1,16 @@
-import { UserRepository } from '../data-access/index';
+import {
+  sequelize,
+  UserGroupRepository,
+  UserRepository,
+} from '../data-access/index';
 import { User } from '../models/index';
 import { UserModel } from '../types/index';
 
 export class UserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private userGroupRepository: UserGroupRepository
+  ) {}
 
   // http://localhost:8080/users?substring=aaa&limit=3
   async getUsers(loginSubstring?: string, limit?: number): Promise<User[]> {
@@ -51,9 +58,13 @@ export class UserService {
   }
 
   async deleteUser(userId: string): Promise<void> {
+    const transaction = await sequelize.transaction();
     try {
-      await this.userRepository.deleteUser(userId);
+      await this.userRepository.deleteUser(userId, transaction);
+      await this.userGroupRepository.deleteUserGroupAfterUser(userId, transaction);
+      await transaction.commit();
     } catch (err) {
+      await transaction.rollback();
       throw err;
     }
   }

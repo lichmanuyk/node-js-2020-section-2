@@ -33,6 +33,15 @@ export const sequelize = new Sequelize(
 export function initDBData() {
   pg.connect().then(() => {
     console.log('Connected');
+
+    createGroupTable()
+      .then(() => console.log('Group database created'))
+      .catch(err => console.log(err.message));
+
+    createUserGroupTable()
+      .then(() => console.log('UserGroup database created'))
+      .catch(err => console.log(err.message));
+
     createUserTable()
       .then(() => {
         console.log('User dataBase created');
@@ -43,10 +52,17 @@ export function initDBData() {
         });
       })
       .catch((err) => console.log(err.message));
-    createGroupTable()
-      .then(() => console.log('Group database created'))
-      .catch(err => console.log(err.message));
   });
+}
+
+function createUserGroupTable() {
+  return pg.query(`
+  CREATE TABLE "UserGroup" (
+    id uuid,
+    "userId" uuid,
+    "groupId" uuid
+  );
+`);
 }
 
 function createUserTable() {

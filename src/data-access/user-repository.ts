@@ -1,3 +1,5 @@
+import { Transaction } from 'sequelize/types';
+
 import { User } from '../models/index';
 import { UserModel } from '../types/index';
 
@@ -8,7 +10,7 @@ export class UserRepository {
         where: { isDeleted: false },
         order: [['login', 'ASC']],
         limit,
-        raw: true
+        raw: true,
       });
       return users;
     } catch (err) {
@@ -48,12 +50,13 @@ export class UserRepository {
     }
   }
 
-  async deleteUser(id: string): Promise<void> {
+  async deleteUser(id: string, transaction: Transaction): Promise<void> {
     try {
       const code = await User.update(
         { isDeleted: true },
         {
           where: { id, isDeleted: false },
+          transaction
         }
       );
 

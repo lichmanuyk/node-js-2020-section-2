@@ -1,9 +1,16 @@
-import { GroupRepository } from '../data-access/index';
+import {
+  GroupRepository,
+  sequelize,
+  UserGroupRepository,
+} from '../data-access/index';
 import { Group } from '../models/index';
 import { GroupModel } from '../types/index';
 
 export class GroupService {
-  constructor(private groupRepository: GroupRepository) {}
+  constructor(
+    private groupRepository: GroupRepository,
+    private userGroupRepository: UserGroupRepository
+  ) {}
 
   async getGroups(): Promise<Group[]> {
     try {
@@ -48,9 +55,16 @@ export class GroupService {
   }
 
   async deleteGroup(groupId: string): Promise<void> {
+    const transaction = await sequelize.transaction();
     try {
-      await this.groupRepository.deleteGroup(groupId);
+      await this.groupRepository.deleteGroup(groupId, transaction);
+      await this.userGroupRepository.deleteUserGroupAfterGroup(
+        groupId,
+        transaction
+      );
+      await transaction.commit();
     } catch (err) {
+      await transaction.rollback();
       throw err;
     }
   }
