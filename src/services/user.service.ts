@@ -1,9 +1,15 @@
-import { UserRepository } from '../data-access/index';
+import {
+  UserGroupRepository,
+  UserRepository,
+} from '../data-access/index';
 import { User } from '../models/index';
 import { UserModel } from '../types/index';
 
 export class UserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private userGroupRepository: UserGroupRepository
+  ) {}
 
   // http://localhost:8080/users?substring=aaa&limit=3
   async getUsers(loginSubstring?: string, limit?: number): Promise<User[]> {
@@ -53,6 +59,7 @@ export class UserService {
   async deleteUser(userId: string): Promise<void> {
     try {
       await this.userRepository.deleteUser(userId);
+      await this.userGroupRepository.deleteUserGroupAfterUser(userId);
     } catch (err) {
       throw err;
     }
