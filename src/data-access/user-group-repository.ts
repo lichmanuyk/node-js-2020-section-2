@@ -21,15 +21,17 @@ export class UserGroupRepository {
     try {
       const transaction = await sequelize.transaction();
       try {
-        userIds.forEach(
-          async (userId) =>
-            await UserGroup.create(
-              {
-                userId,
-                groupId,
-              },
-              { transaction }
-            )
+        await Promise.all(
+          userIds.map(
+            async (userId) =>
+              await UserGroup.create(
+                {
+                  userId,
+                  groupId,
+                },
+                { transaction }
+              )
+          )
         );
         await transaction.commit();
       } catch (err) {
