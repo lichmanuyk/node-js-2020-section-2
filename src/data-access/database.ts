@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { Client } from 'pg';
+import { Logger } from 'winston';
 
 import { UserModel } from '../types/index';
 import { MOCK_USERS } from './mock-users';
@@ -30,17 +31,17 @@ export const sequelize = new Sequelize(
   }
 );
 
-export function initDBData() {
+export function initDBData(logger: Logger) {
   pg.connect().then(() => {
     console.log('Connected');
 
     createGroupTable()
       .then(() => console.log('Group database created'))
-      .catch(err => console.log(err.message));
+      .catch(err => logger.error(err));
 
     createUserGroupTable()
       .then(() => console.log('UserGroup database created'))
-      .catch(err => console.log(err.message));
+      .catch(err => logger.error(err));
 
     createUserTable()
       .then(() => {
@@ -48,10 +49,10 @@ export function initDBData() {
         MOCK_USERS.forEach((mockUser) => {
           addUserToTable(mockUser)
             .then(() => console.log('User added to db'))
-            .catch((err) => console.log(err.message));
+            .catch((err) => logger.error(err));
         });
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => logger.error(err));
   });
 }
 

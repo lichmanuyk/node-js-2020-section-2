@@ -1,7 +1,11 @@
+import { Logger } from 'winston';
+
 import { User } from '../models/index';
 import { UserModel } from '../types/index';
 
 export class UserRepository {
+  constructor(private logger: Logger) {}
+
   async getUsers(limit?: number, loginSubstr: string = ''): Promise<User[]> {
     try {
       const users = await User.findAll({
@@ -12,6 +16,7 @@ export class UserRepository {
       });
       return users;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -23,6 +28,7 @@ export class UserRepository {
       });
       return user;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -32,6 +38,7 @@ export class UserRepository {
       const newUser = await User.create(user);
       return newUser.id;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -44,6 +51,7 @@ export class UserRepository {
       const updatedUser = await this.getUserById(user.id);
       return updatedUser;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -61,6 +69,7 @@ export class UserRepository {
         throw new Error('This user is already deleted');
       }
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }

@@ -1,3 +1,4 @@
+import { Logger } from 'winston';
 import {
   GroupRepository,
   sequelize,
@@ -9,10 +10,12 @@ import { GroupModel } from '../types/index';
 export class GroupService {
   constructor(
     private groupRepository: GroupRepository,
-    private userGroupRepository: UserGroupRepository
+    private userGroupRepository: UserGroupRepository,
+    private logger: Logger
   ) {}
 
   async getGroups(): Promise<Group[]> {
+    this.logger.info('Method: getGroups()', [{ service: 'GroupService' }, { arguments }]);
     try {
       const groups = await this.groupRepository.getGroups();
       return groups;
@@ -22,6 +25,7 @@ export class GroupService {
   }
 
   async getGroupById(groupId: string): Promise<Group> {
+    this.logger.info('Method: getGroupById()', [{ service: 'GroupService' }, { arguments }]);
     try {
       const group = await this.groupRepository.getGroupById(groupId);
       return group;
@@ -31,6 +35,7 @@ export class GroupService {
   }
 
   async createGroup(groupData: GroupModel): Promise<string> {
+    this.logger.info('Method: createGroup()', [{ service: 'GroupService' }, { arguments }]);
     try {
       const id = await this.groupRepository.createGroup({
         name: groupData.name,
@@ -43,6 +48,7 @@ export class GroupService {
   }
 
   async updateGroup(id: string, groupData: GroupModel): Promise<Group> {
+    this.logger.info('Method: updateGroup()', [{ service: 'GroupService' }, { arguments }]);
     try {
       const updatedGroup = await this.groupRepository.updateGroup({
         id,
@@ -55,6 +61,7 @@ export class GroupService {
   }
 
   async deleteGroup(groupId: string): Promise<void> {
+    this.logger.info('Method: deleteGroup()', [{ service: 'GroupService' }, { arguments }]);
     try {
       await this.groupRepository.deleteGroup(groupId);
       await this.userGroupRepository.deleteUserGroupAfterGroup(
