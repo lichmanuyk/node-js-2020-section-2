@@ -6,6 +6,10 @@ import { UserJoiValidator, GroupJoiValidator } from './validators/index';
 import { GroupService, UserService } from './services/index';
 import { GroupRepository, UserRepository, UserGroupRepository, initDBData } from './data-access/index';
 
+process.on('uncaughtException', (err) => {
+  logger.error(err);
+});
+
 const app = express();
 const port = 8080;
 
@@ -19,8 +23,8 @@ const groupService = new GroupService(groupRepository, userGroupRepository, logg
 const userJoiValidator = new UserJoiValidator(userService);
 const groupJoiValidator = new GroupJoiValidator(groupService);
 
-const userController = new UserController(userJoiValidator, userService);
-const groupController = new GroupController(groupJoiValidator, groupService);
+const userController = new UserController(userJoiValidator, userService, logger);
+const groupController = new GroupController(groupJoiValidator, groupService, logger);
 
 app.use(express.json());
 app.use('/', userController.router, groupController.router);

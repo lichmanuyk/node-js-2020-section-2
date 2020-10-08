@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { Logger } from 'winston';
 
 import {
   GroupJoiValidator,
@@ -13,7 +14,8 @@ export class GroupController {
 
   constructor(
     private validator: GroupJoiValidator,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private logger: Logger
   ) {
     this.initializeRoutes();
   }
@@ -41,6 +43,7 @@ export class GroupController {
       const groupItems = await this.groupService.getGroups();
       res.json({ groupItems });
     } catch (err) {
+      this.logger.info('Method: getGroups()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -56,6 +59,7 @@ export class GroupController {
 
       res.json({ groupItems });
     } catch (err) {
+      this.logger.info('Method: getGroupById()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -65,6 +69,7 @@ export class GroupController {
       const id = await this.groupService.createGroup(req.body);
       res.json({ id });
     } catch (err) {
+      this.logger.info('Method: createGroup()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -77,6 +82,7 @@ export class GroupController {
       );
       res.json(updatedGroup);
     } catch (err) {
+      this.logger.info('Method: updateGroup()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -86,6 +92,7 @@ export class GroupController {
       await this.groupService.deleteGroup(req.params.id);
       res.sendStatus(204);
     } catch (err) {
+      this.logger.info('Method: deleteGroup()', [{ arguments }, {message: err.message}]);
       res.status(404).json(err.message);
     }
   }
