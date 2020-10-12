@@ -6,8 +6,9 @@ import { UserJoiValidator, GroupJoiValidator } from './validators/index';
 import { GroupService, UserService } from './services/index';
 import { GroupRepository, UserRepository, UserGroupRepository, initDBData } from './data-access/index';
 
-process.on('uncaughtException', (err) => {
-  logger.error(err);
+process.on('uncaughtException', logger.error);
+process.on('unhandledrejection', (reason, promise) => {
+  logger.error(`Unhandled Promise Rejection at:${promise}, reason: ${reason}`);
 });
 
 const app = express();
