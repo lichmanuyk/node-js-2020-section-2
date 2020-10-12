@@ -1,4 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
+import cors from 'cors';
+
 import { logger } from './logger';
 import { GroupController, UserController } from './controllers/index';
 import { UserJoiValidator, GroupJoiValidator } from './validators/index';
@@ -27,6 +29,7 @@ const userController = new UserController(userJoiValidator, userService, logger)
 const groupController = new GroupController(groupJoiValidator, groupService, logger);
 
 app.use(express.json());
+app.use(cors());
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err) {
     logger.error(err);
