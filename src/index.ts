@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response, } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { logger } from './logger';
 import { GroupController, UserController } from './controllers/index';
 import { UserJoiValidator, GroupJoiValidator } from './validators/index';
@@ -27,7 +27,7 @@ const userController = new UserController(userJoiValidator, userService, logger)
 const groupController = new GroupController(groupJoiValidator, groupService, logger);
 
 app.use(express.json());
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err) {
     logger.error(err);
     res.sendStatus(500);
