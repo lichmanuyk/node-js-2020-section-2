@@ -46,7 +46,7 @@ export class UserController {
       const userItems = await this.userService.getUsers(subString, limit);
       res.json({ userItems });
     } catch (err) {
-      this.logger.info('Method: deleteGroup()', [{ arguments }, {message: err.message}]);
+      this.logger.error('Method: deleteGroup()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -64,7 +64,7 @@ export class UserController {
 
       res.json({ userItems });
     } catch (err) {
-      this.logger.info('Method: getUserById()', [{ arguments }, {message: err.message}]);
+      this.logger.error('Method: getUserById()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -74,7 +74,7 @@ export class UserController {
       const id = await this.userService.createUser(req.body);
       res.json({ id });
     } catch (err) {
-      this.logger.info('Method: createUser()', [{ arguments }, {message: err.message}]);
+      this.logger.error('Method: createUser()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -87,7 +87,7 @@ export class UserController {
       );
       res.json(updatedUser);
     } catch (err) {
-      this.logger.info('Method: updateUser()', [{ arguments }, {message: err.message}]);
+      this.logger.error('Method: updateUser()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -97,7 +97,7 @@ export class UserController {
       await this.userService.deleteUser(req.params.id);
       res.sendStatus(204);
     } catch (err) {
-      this.logger.info('Method: deleteUser()', [{ arguments }, {message: err.message}]);
+      this.logger.error('Method: deleteUser()', [{ arguments }, {message: err.message}]);
       res.status(404).json(err.message);
     }
   }

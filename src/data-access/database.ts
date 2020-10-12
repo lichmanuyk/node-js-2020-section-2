@@ -37,11 +37,11 @@ export function initDBData(logger: Logger) {
 
     createGroupTable()
       .then(() => console.log('Group database created'))
-      .catch(err => logger.error(err));
+      .catch(logger.error);
 
     createUserGroupTable()
       .then(() => console.log('UserGroup database created'))
-      .catch(err => logger.error(err));
+      .catch(logger.error);
 
     createUserTable()
       .then(() => {
@@ -49,10 +49,10 @@ export function initDBData(logger: Logger) {
         MOCK_USERS.forEach((mockUser) => {
           addUserToTable(mockUser)
             .then(() => console.log('User added to db'))
-            .catch((err) => logger.error(err));
+            .catch(logger.error);
         });
       })
-      .catch((err) => logger.error(err));
+      .catch(logger.error);
   });
 }
 
