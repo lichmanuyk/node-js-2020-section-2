@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { Logger } from 'winston';
 
 import {
   UserJoiValidator,
@@ -13,7 +14,8 @@ export class UserController {
 
   constructor(
     private validator: UserJoiValidator,
-    private userService: UserService
+    private userService: UserService,
+    private logger: Logger
   ) {
     this.initializeRoutes();
   }
@@ -44,6 +46,7 @@ export class UserController {
       const userItems = await this.userService.getUsers(subString, limit);
       res.json({ userItems });
     } catch (err) {
+      this.logger.error('Method: deleteGroup()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -61,6 +64,7 @@ export class UserController {
 
       res.json({ userItems });
     } catch (err) {
+      this.logger.error('Method: getUserById()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -70,6 +74,7 @@ export class UserController {
       const id = await this.userService.createUser(req.body);
       res.json({ id });
     } catch (err) {
+      this.logger.error('Method: createUser()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -82,6 +87,7 @@ export class UserController {
       );
       res.json(updatedUser);
     } catch (err) {
+      this.logger.error('Method: updateUser()', [{ arguments }, {message: err.message}]);
       res.status(400).json(err.message);
     }
   }
@@ -91,6 +97,7 @@ export class UserController {
       await this.userService.deleteUser(req.params.id);
       res.sendStatus(204);
     } catch (err) {
+      this.logger.error('Method: deleteUser()', [{ arguments }, {message: err.message}]);
       res.status(404).json(err.message);
     }
   }

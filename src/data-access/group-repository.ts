@@ -1,7 +1,11 @@
+import { Logger } from 'winston';
+
 import { Group } from '../models/index';
 import { GroupModel } from '../types/index';
 
 export class GroupRepository {
+  constructor(private logger: Logger) {}
+
   async getGroups(): Promise<Group[]> {
     try {
       const groups = await Group.findAll({
@@ -9,6 +13,7 @@ export class GroupRepository {
       });
       return groups;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -20,6 +25,7 @@ export class GroupRepository {
       });
       return group;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -29,6 +35,7 @@ export class GroupRepository {
       const newGroup = await Group.create(group);
       return newGroup.id;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -41,6 +48,7 @@ export class GroupRepository {
       const updatedGroup = await this.getGroupById(group.id);
       return updatedGroup;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -54,6 +62,7 @@ export class GroupRepository {
         throw new Error('Group wasnt deleted or it is not existed');
       }
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }

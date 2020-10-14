@@ -1,8 +1,10 @@
+import { Logger } from 'winston';
+
 import { Group, User, UserGroup } from '../models/index';
 import { sequelize } from './database';
 
 export class UserGroupRepository {
-  constructor() {
+  constructor(private logger: Logger) {
     Group.belongsToMany(User, {
       through: UserGroup,
       as: 'users',
@@ -35,10 +37,12 @@ export class UserGroupRepository {
         );
         await transaction.commit();
       } catch (err) {
+        this.logger.error(err);
         await transaction.rollback();
         throw err;
       }
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -51,6 +55,7 @@ export class UserGroupRepository {
         },
       });
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -63,6 +68,7 @@ export class UserGroupRepository {
         },
       });
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
