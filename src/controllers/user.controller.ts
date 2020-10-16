@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { Logger } from 'winston';
 
 import {
@@ -15,27 +15,30 @@ export class UserController {
   constructor(
     private validator: UserJoiValidator,
     private userService: UserService,
-    private logger: Logger
+    private logger: Logger,
+    private authMiddleware: (req: Request, res: Response, next: NextFunction) => void
   ) {
     this.initializeRoutes();
   }
 
   async initializeRoutes() {
-    this.router.get(`${this.path}`, this.getUsers.bind(this));
-    this.router.get(`${this.path}/:id`, this.getUserById.bind(this));
+    this.router.get(`${this.path}`, this.authMiddleware,  this.getUsers.bind(this));
+    this.router.get(`${this.path}/:id`, this.authMiddleware, this.getUserById.bind(this));
     this.router.post(
       `${this.path}`,
+      this.authMiddleware,
       this.validator.validateSchema(userPostSchema),
       await this.validator.validateUniqueSchema(uniqueUserLoginSchema),
       this.createUser.bind(this)
     );
     this.router.post(
       `${this.path}/:id`,
+      this.authMiddleware,
       this.validator.validateSchema(userPostSchema),
       await this.validator.validateUniqueSchema(uniqueUserLoginSchema),
       this.updateUser.bind(this)
     );
-    this.router.delete(`${this.path}/:id`, this.deleteUser.bind(this));
+    this.router.delete(`${this.path}/:id`, this.authMiddleware, this.deleteUser.bind(this));
   }
 
   // http://localhost:8080/users?substring=aaa&limit=3
