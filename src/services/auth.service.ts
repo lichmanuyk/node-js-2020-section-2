@@ -2,22 +2,17 @@ import jwt from 'jsonwebtoken';
 
 import { Config } from '../config/index';
 import { Tokens } from '../types/index';
+import { UserService } from './user.service';
 
 export class AuthService {
   private refreshTokens: string[] = [];
-  private users = [
-    {
-      userName: 'John',
-      password: '12345jk',
-      refreshToken: '',
-    },
-  ];
 
-  constructor(private config: Config) {}
+  constructor(private config: Config, private userService: UserService) {}
 
-  validatePassword(userName: string, password: string): boolean {
-    const userProfile = this.users.find(
-      (profile) => profile.userName === userName
+  async validatePassword(userName: string, password: string): Promise<boolean> {
+    const users = await this.userService.getUsers();
+    const userProfile = users.find(
+      (profile) => profile.login === userName
     );
     const isValid = userProfile ? userProfile.password === password : false;
     return isValid;

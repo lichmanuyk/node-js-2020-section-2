@@ -41,10 +41,10 @@ export class AuthController {
     this.router.post('/refresh', this.refresh.bind(this));
   }
 
-  private login(req: Request, res: Response) {
+  private async login(req: Request, res: Response) {
     const userName = req.body.username;
     const password = req.body.password;
-    const isUserNameAndPaswordValid = this.authService.validatePassword(userName, password);
+    const isUserNameAndPaswordValid = await this.authService.validatePassword(userName, password);
 
     if (!userName || !password || !isUserNameAndPaswordValid) {
       return res.status(401).send();

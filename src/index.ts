@@ -25,7 +25,7 @@ const userGroupRepository = new UserGroupRepository(logger);
 
 const userService = new UserService(userRepository, userGroupRepository, logger);
 const groupService = new GroupService(groupRepository, userGroupRepository, logger);
-const authService = new AuthService(config);
+const authService = new AuthService(config, userService);
 
 const userJoiValidator = new UserJoiValidator(userService);
 const groupJoiValidator = new GroupJoiValidator(groupService);
