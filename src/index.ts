@@ -4,7 +4,7 @@ import cors from 'cors';
 import { logger } from './logger';
 import { GroupController, UserController } from './controllers/index';
 import { UserJoiValidator, GroupJoiValidator, AuthJoiValidator } from './validators/index';
-import { GroupService, UserService } from './services/index';
+import { GroupService, UserService, AuthService } from './services/index';
 import { GroupRepository, UserRepository, UserGroupRepository, initDBData } from './data-access/index';
 import { AuthController } from './controllers/auth.controller';
 import { Config } from './config';
@@ -25,12 +25,13 @@ const userGroupRepository = new UserGroupRepository(logger);
 
 const userService = new UserService(userRepository, userGroupRepository, logger);
 const groupService = new GroupService(groupRepository, userGroupRepository, logger);
+const authService = new AuthService(config);
 
 const userJoiValidator = new UserJoiValidator(userService);
 const groupJoiValidator = new GroupJoiValidator(groupService);
 const authJoiValidator = new AuthJoiValidator();
 
-const authController = new AuthController(config, authJoiValidator);
+const authController = new AuthController(config, authJoiValidator, authService);
 const userController = new UserController(userJoiValidator, userService, logger, authController.chechAuth.bind(authController));
 const groupController = new GroupController(groupJoiValidator, groupService, logger, authController.chechAuth.bind(authController));
 
