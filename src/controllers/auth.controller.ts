@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, Router } from 'express';
+import { Logger } from 'winston';
 import jwt from 'jsonwebtoken';
 
 import { AuthService } from '../services/index';
@@ -11,7 +12,8 @@ export class AuthController {
   constructor(
     private config: Config,
     private validator: AuthJoiValidator,
-    private authService: AuthService
+    private authService: AuthService,
+    private logger: Logger,
   ) {
     this.initializeRoutes();
   }
@@ -21,6 +23,7 @@ export class AuthController {
     const accessToken = authorization ? authorization.split(' ')[1] : '';
 
     if (!accessToken) {
+      this.logger.error('No access token provided');
       res.sendStatus(401);
     }
 
@@ -28,6 +31,7 @@ export class AuthController {
       jwt.verify(accessToken, this.config.ACCESS_TOKEN_SECRET);
       next();
     } catch (e) {
+      this.logger.error(e.message)
       return res.sendStatus(403);
     }
   }
@@ -44,10 +48,14 @@ export class AuthController {
   private async login(req: Request, res: Response) {
     const userName = req.body.username;
     const password = req.body.password;
-    const isUserNameAndPaswordValid = await this.authService.validatePassword(userName, password);
-
-    if (!userName || !password || !isUserNameAndPaswordValid) {
-      return res.status(401).send();
+    try {
+      const isUserNameAndPaswordValid = await this.authService.validatePassword(userName, password);
+      if (!userName || !password || !isUserNameAndPaswordValid) {
+        return res.sendStatus(401);
+      }
+    } catch (e) {
+      this.logger.error(e.message);
+      return res.sendStatus(401);
     }
 
     const payload = { userName };

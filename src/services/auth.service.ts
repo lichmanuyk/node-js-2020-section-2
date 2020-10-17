@@ -10,12 +10,14 @@ export class AuthService {
   constructor(private config: Config, private userService: UserService) {}
 
   async validatePassword(userName: string, password: string): Promise<boolean> {
-    const users = await this.userService.getUsers();
-    const userProfile = users.find(
-      (profile) => profile.login === userName
-    );
-    const isValid = userProfile ? userProfile.password === password : false;
-    return isValid;
+    try {
+      const users = await this.userService.getUsers();
+      const userProfile = users.find((profile) => profile.login === userName);
+      const isValid = userProfile ? userProfile.password === password : false;
+      return isValid;
+    } catch (err) {
+      throw err;
+    }
   }
 
   createTokens(payload: any): Tokens {
@@ -35,19 +37,23 @@ export class AuthService {
   }
 
   checkAndRefreshTokens(refreshToken: string): Tokens {
-    const { userName } = jwt.verify(
-      refreshToken,
-      this.config.REFRESH_TOKEN_SECRET
-    ) as { userName: string };
+    try {
+      const { userName } = jwt.verify(
+        refreshToken,
+        this.config.REFRESH_TOKEN_SECRET
+      ) as { userName: string };
 
-    if (!this.refreshTokens.includes(refreshToken)) {
-      throw new Error();
+      if (!this.refreshTokens.includes(refreshToken)) {
+        throw new Error('No such refresh token');
+      }
+
+      this.removeOldRefreshToken(refreshToken);
+      const tokens = this.createTokens({ userName });
+
+      return tokens;
+    } catch (err) {
+      throw err;
     }
-
-    this.removeOldRefreshToken(refreshToken);
-    const tokens = this.createTokens({ userName });
-
-    return tokens;
   }
 
   private removeOldRefreshToken(oldRefreshToken: string): void {
