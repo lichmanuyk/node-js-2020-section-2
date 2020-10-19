@@ -6,6 +6,15 @@ import { AuthService } from '../services/index';
 import { Config } from '../config/index';
 import { AuthJoiValidator, loginPostSchema } from '../validators';
 
+
+declare global {
+  namespace Express {
+    interface Request {
+      userName: string;
+    }
+  }
+}
+
 export class AuthController {
   public router = Router();
 
@@ -13,7 +22,7 @@ export class AuthController {
     private config: Config,
     private validator: AuthJoiValidator,
     private authService: AuthService,
-    private logger: Logger,
+    private logger: Logger
   ) {
     this.initializeRoutes();
   }
@@ -28,10 +37,14 @@ export class AuthController {
     }
 
     try {
-      jwt.verify(accessToken, this.config.ACCESS_TOKEN_SECRET);
+      const { userName } = jwt.verify(
+        accessToken,
+        this.config.ACCESS_TOKEN_SECRET
+      ) as { userName: string };
+      req.userName = userName;
       next();
     } catch (e) {
-      this.logger.error(e.message)
+      this.logger.error(e.message);
       return res.sendStatus(403);
     }
   }
@@ -49,7 +62,10 @@ export class AuthController {
     const userName = req.body.username;
     const password = req.body.password;
     try {
-      const isUserNameAndPaswordValid = await this.authService.validatePassword(userName, password);
+      const isUserNameAndPaswordValid = await this.authService.validatePassword(
+        userName,
+        password
+      );
       if (!userName || !password || !isUserNameAndPaswordValid) {
         return res.sendStatus(401);
       }
@@ -58,8 +74,7 @@ export class AuthController {
       return res.sendStatus(401);
     }
 
-    const payload = { userName };
-    const tokens = this.authService.createTokens(payload);
+    const tokens = this.authService.createTokens(userName);
 
     res.json(tokens);
   }
