@@ -4,29 +4,26 @@ import { Logger } from 'winston';
 
 import { UserModel } from '../types/index';
 import { MOCK_USERS } from './mock-users';
+import { Config } from '../config';
 
-const DB_NAME = 'postgres';
-const DB_USER_NAME = 'postgres';
-const DB_USER_PASSWORD = '12345';
-const HOST = 'localhost';
-const PORT = 5432;
+const config = new Config();
 
 // I use it just for SQL queries from the first task. In all other cases I use sequelize that is below.
 export const pg = new Client({
-  user: DB_USER_NAME,
-  host: HOST,
-  database: DB_NAME,
-  password: DB_USER_PASSWORD,
-  port: PORT,
+  user: config.DB_USER_NAME,
+  host: config.HOST,
+  database: config.DB_NAME,
+  password: config.DB_USER_PASSWORD,
+  port: Number(config.PORT),
 });
 
 export const sequelize = new Sequelize(
-  DB_NAME,
-  DB_USER_NAME,
-  DB_USER_PASSWORD,
+  config.DB_NAME,
+  config.DB_USER_NAME,
+  config.DB_USER_PASSWORD,
   {
-    host: HOST,
-    port: PORT,
+    host: config.HOST,
+    port: Number(config.PORT),
     dialect: 'postgres',
   }
 );
