@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { Logger } from 'winston';
 
 import {
@@ -15,27 +15,30 @@ export class GroupController {
   constructor(
     private validator: GroupJoiValidator,
     private groupService: GroupService,
-    private logger: Logger
+    private logger: Logger,
+    private authMiddleware: (req: Request, res: Response, next: NextFunction) => void
   ) {
     this.initializeRoutes();
   }
 
   async initializeRoutes() {
-    this.router.get(`${this.path}`, this.getGroups.bind(this));
-    this.router.get(`${this.path}/:id`, this.getGroupById.bind(this));
+    this.router.get(`${this.path}`, this.authMiddleware, this.getGroups.bind(this));
+    this.router.get(`${this.path}/:id`, this.authMiddleware, this.getGroupById.bind(this));
     this.router.post(
       `${this.path}`,
+      this.authMiddleware,
       this.validator.validateSchema(groupPostSchema),
       await this.validator.validateUniqueSchema(uniqueGroupNameSchema),
       this.createGroup.bind(this)
     );
     this.router.post(
       `${this.path}/:id`,
+      this.authMiddleware,
       this.validator.validateSchema(groupPostSchema),
       await this.validator.validateUniqueSchema(uniqueGroupNameSchema),
       this.updateGroup.bind(this)
     );
-    this.router.delete(`${this.path}/:id`, this.deleteGroup.bind(this));
+    this.router.delete(`${this.path}/:id`, this.authMiddleware, this.deleteGroup.bind(this));
   }
 
   private async getGroups(req: Request, res: Response) {
