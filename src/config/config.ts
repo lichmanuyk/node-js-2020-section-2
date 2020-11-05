@@ -19,10 +19,10 @@ export class Config {
     this.ACCESS_TOKEN_LIFE = Number(process.env.ACCESS_TOKEN_LIFE);
     this.REFRESH_TOKEN_LIFE = Number(process.env.REFRESH_TOKEN_LIFE);
 
-    this.DB_NAME = 'postgres';
-    this.DB_USER_NAME = 'postgres';
-    this.DB_USER_PASSWORD = '12345';
-    this.HOST = 'localhost';
-    this.PORT = '5432';
+    this.DB_NAME = process.env.DB_NAME;
+    this.DB_USER_NAME = process.env.DB_USER_NAME;
+    this.DB_USER_PASSWORD = process.env.DB_USER_PASSWORD;
+    this.HOST = process.env.HOST;
+    this.PORT = process.env.PORT;
   }
 }
